@@ -1,29 +1,36 @@
 import sys
 
 
+# Función para ingerir datos de un archivo dado
 def ingestaDeDatos(nombreArchivo):
+    # Intentando abrir y leer el archivo de datos
     try:
         with open(nombreArchivo, 'r') as data_file:
             while True:
+                # Leyendo una línea del archivo y eliminando espacios en blanco al principio/final
                 line = data_file.readline().strip()
+
+                # Salir del bucle si la línea está vacía
                 if not line:
                     break
 
+                # Convirtiendo la línea a un entero
                 n = int(line)
 
-                # Skipping the blank line before the flow matrix
+                # Leyendo y descartando la siguiente línea vacía
                 data_file.readline()
 
-                # Reading the flow matrix
+                # Leyendo 'n' líneas para poblar la matriz 'flujo'
                 flujo = [list(map(int, data_file.readline().split())) for _ in range(n)]
 
-                # Skipping the blank line before the distance matrix
+                # Leyendo y descartando la siguiente línea
                 data_file.readline()
 
-                # Reading the distance matrix
+                # Leyendo 'n' líneas para poblar la matriz 'distancias'
                 distancias = [list(map(int, data_file.readline().split())) for _ in range(n)]
 
-                print("Tamanno:", n)
+                # Imprimiendo el tamaño y las matrices
+                print("Tamaño:", n)
                 print("Matriz de flujo:")
                 for fila in flujo:
                     print(" ".join(map(str, fila)))
@@ -32,39 +39,19 @@ def ingestaDeDatos(nombreArchivo):
                     print(" ".join(map(str, fila)))
                 print("----------------------------------")
 
-                # Skipping the blank line after the distance matrix to get ready for the next data set
+                # Leyendo y descartando la siguiente línea
                 data_file.readline()
 
+    # Manejando el caso donde el archivo podría no encontrarse
     except FileNotFoundError:
-        print(f"No se pudo abrir el archivo {nombreArchivo}.")
-        return 1
-
-    return 0
+        print(f"No se pudo abrir el archivo {nombreArchivo}")
 
 
-def main():
-    if len(sys.argv) != 2:
-        print(f"Uso: {sys.argv[0]} <nombre del archivo de parametros>")
-        return 1
-
-    try:
-        with open(sys.argv[1], 'r') as param_file:
-            params = {}
-            for line in param_file:
-                key, value = [s.strip() for s in line.split('=')]
-                params[key] = value
-
-            if params.get("otros_parametros") == "ingesta":
-                result = ingestaDeDatos(params.get("nombre_del_archivo"))
-                if result != 0:
-                    return result
-
-    except FileNotFoundError:
-        print(f"No se pudo abrir el archivo {sys.argv[1]}.")
-        return 1
-
-    return 0
-
-
+# Verificando si este script se está ejecutando como el módulo principal
 if __name__ == "__main__":
-    exit(main())
+    # Verificando si el script recibió el número requerido de argumentos de línea de comando
+    if len(sys.argv) != 2:
+        print("Uso: python main.py <nombre del archivo>")
+    else:
+        # Llamando a la función ingestaDeDatos con el nombre de archivo proporcionado
+        ingestaDeDatos(sys.argv[1])
